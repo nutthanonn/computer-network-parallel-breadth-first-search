@@ -1,8 +1,8 @@
 import socket
 
 HEADER = 64
-HOST = 'localhost'
-PORT = 3000
+HOST = '0.0.0.0'
+PORT = 3002
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = '!DISCONNECT'
@@ -20,5 +20,6 @@ def send(msg):
     client.send(message)
     print(client.recv(2048).decode(FORMAT))
 
-send('Hello World')
-send(DISCONNECT_MESSAGE)
+
+# send('{"node":["1"], "weight": 0, "neighbors": {"2": 1, "3": 2} }')
+send('{"node":["3"], "weight": 0, "graph": {"1":{"2": 1, "3": 3}, "2":{"1": 1, "3": 2}, "3": {"1": 3, "2": 2} } }')

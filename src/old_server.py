@@ -1,28 +1,35 @@
-import socket
-import threading
-import json
 import time
+import json
+import threading
+import socket
+
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 
 HEADER = 64
-HOST = '0.0.0.0'
-PORT = 3003
+HOST = os.getenv('HOST')
+PORT = int(os.getenv('PORT'))
+MAX_NODE = int(os.getenv('MAX_NODE'))
+SERVER_NAME = os.getenv('SERVER_NAME')
+
+PORT_COLLECTION = ['172.20.0.2', '172.20.0.3', '172.20.0.4', '172.20.0.5']
+
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
-MAX_NODE = 4
-SERVER_NAME = "4"
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(ADDR)
 
 
-def send(port, recv=None):
+def send(ip, recv=None):
     message = recv.encode(FORMAT)
     msg_length = len(message)
     send_length = str(msg_length).encode(FORMAT)
     send_length += b' ' * (HEADER - len(send_length))
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect((HOST, port))
+    client.connect((ip, 8080))
     client.send(send_length)
     client.send(message)
 
@@ -48,10 +55,11 @@ def handle_client(conn, addr):
                     msg['node'].append(SERVER_NAME)
                     msg['weight'] += msg['graph'][msg['node'][-2]][SERVER_NAME]
 
-                for node in range(MAX_NODE):
+                for node, val in enumerate(PORT_COLLECTION):
                     if str(node+1) not in msg['node']:
+                        print(f"send to {val}")
                         time.sleep(1)
-                        recv = send(node + 3000, json.dumps(msg))
+                        recv = send(val, json.dumps(msg))
 
                         recv = json.loads(recv)
 
@@ -60,6 +68,10 @@ def handle_client(conn, addr):
                                 conn.send(json.dumps(recv).encode(FORMAT))
                             else:
                                 print(f"finish path {node+1}")
+
+                                # when finish
+                                if node+1 == MAX_NODE:
+                                    conn.send(json.dumps(recv).encode(FORMAT))
                         isPass = True
 
                 # last node
@@ -77,7 +89,6 @@ def main():
     print(f'Server is listening on {HOST}:{PORT}')
     while True:
         conn, addr = s.accept()
-        # print(f'Connected to {addr}')
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
 

@@ -3,6 +3,7 @@ import json
 import threading
 import socket
 import math
+import logging
 
 from dotenv import load_dotenv
 import os
@@ -56,12 +57,12 @@ def handle_client(conn, addr):
                         print(
                             f"Send to {msg['node'][0]}, Node Path: {msg['node']}, Weight: {msg['weight']}")
                         send(
-                            PORT_COLLECTION[int(msg['node'][0])-1], 8080, json.dumps(msg))
+                            PORT_COLLECTION[int(msg['node'][0])-1], PORT, json.dumps(msg))
                     else:
                         path_collection.append(
-                            f"Node Path: {msg['node']}, Weight: {msg['weight']}")
+                            f"Node{SERVER_NAME} Path: {msg['node']}, Weight: {msg['weight']}")
                         if len(path_collection) == math.factorial(MAX_NODE-1):
-                            print(path_collection)
+                            logging.warning(path_collection)
                 else:
                     for node, val in enumerate(PORT_COLLECTION):
                         if str(node+1) not in msg['node']:

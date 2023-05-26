@@ -2,13 +2,14 @@ import json
 import socket
 
 HEADER = 64
-HOST = '0.0.0.0'
+HOST = '192.168.1.105'
 PORT = 8080
-ADDR = (HOST, PORT)
+# ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(ADDR)
+# client.connect(ADDR)
+
 
 
 def send(msg):
@@ -18,7 +19,7 @@ def send(msg):
     send_length += b' ' * (HEADER - len(send_length))
     client.send(send_length)
     client.send(message)
-    print(client.recv(2048).decode(FORMAT))
+    # print(client.recv(2048).decode(FORMAT))
 
 
 graph = {
@@ -51,4 +52,8 @@ graph = {
 #     }
 # }
 
-send(json.dumps(graph))
+for i in range(4):
+    client.connect((HOST,PORT+i))
+    graph["node"]=[str(i+1)]
+    send(json.dumps(graph))
+    client.close()

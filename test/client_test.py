@@ -2,8 +2,8 @@ import json
 import socket
 
 HEADER = 64
-HOST = '0.0.0.0'
-PORT = 8080
+HOST = '192.168.1.105'
+PORT = 8081
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
 
@@ -16,6 +16,8 @@ def send(msg):
     msg_length = len(message)
     send_length = str(msg_length).encode(FORMAT)
     send_length += b' ' * (HEADER - len(send_length))
+    print(send_length)
+    print("Message :",message)
     client.send(send_length)
     client.send(message)
     print(client.recv(2048).decode(FORMAT))

@@ -14,7 +14,7 @@ HOST = os.getenv('HOST')
 PORT = 8083
 MAX_NODE = int(os.getenv('MAX_NODE'))
 SERVER_NAME = '4'
-PORT_COLLECTION = ['0.0.0.0', '0.0.0.0', '0.0.0.0', '0.0.0.0']
+PORT_COLLECTION = ['192.168.1.105', '192.168.1.105', '192.168.1.105', '192.168.1.105']
 
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
@@ -58,11 +58,11 @@ def handle_client(conn, addr):
                             PORT_COLLECTION[int(msg['node'][0])-1], 8080, json.dumps(msg))  # send to server 1 (port 8080)
                     else:
                         print(
-                            f"Node Path: {msg['node']}, Weight: {msg['weight']}")
+                            f"Node{SERVER_NAME} Path: {msg['node']}, Weight: {msg['weight']}") 
                 else:
                     for node, val in enumerate(PORT_COLLECTION):
                         if str(node+1) not in msg['node']:
-                            print(f"send to {val}")
+                            print(f"send to {val}{node}")
                             time.sleep(1)
 
                             send(val, node+8080, json.dumps(msg))
@@ -83,3 +83,4 @@ def main():
 if __name__ == '__main__':
     print(f'Server {SERVER_NAME} started')
     main()
+

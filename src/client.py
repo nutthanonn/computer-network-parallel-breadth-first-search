@@ -5,7 +5,6 @@ HEADER = 64
 HOST = '0.0.0.0'
 PORT = 8080
 FORMAT = 'utf-8'
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
 def send(msg):

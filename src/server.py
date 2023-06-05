@@ -72,6 +72,8 @@ def handle_client(conn, addr):
                         path_collection.append(
                             f"Node Path: {msg['node']}, Weight: {msg['weight']}")
                         if len(path_collection) == math.factorial(MAX_NODE-1):
+                            logging.warning(
+                                f"All path collection time: {time.time()}")
                             logging.warning(path_collection)
                 else:
                     for node, val in enumerate(PORT_COLLECTION):
@@ -87,6 +89,7 @@ def handle_client(conn, addr):
 
 def client_send():
     time.sleep(5)
+    logging.warning(f"Start send time: {time.time()}")
 
     GRAPH["node"] = [SERVER_NAME]
     send(HOST, 8080, json.dumps(GRAPH))

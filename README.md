@@ -14,3 +14,7 @@ docker compose up -d
 ```
 
 _NOTE: You can view the difference output by logging into the Docker container's terminal._
+
+# Result on docker container
+
+<img src="./Result.png" />
